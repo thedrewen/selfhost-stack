@@ -6,7 +6,8 @@ Production-ready base for any VPS/VDS: a server hardening script plus a modular 
 
 ### Server setup (`install.sh`)
 
-- System update and handy tools: `btop`, `neofetch`, `fastfetch`, `zsh` with Oh My Zsh.
+- System update and handy tools: `btop`, `neofetch`, `fastfetch`, `eza`, `zsh` with Oh My Zsh.
+- `ls` is replaced by [eza](https://github.com/eza-community/eza) for the new user (`home/.oh-my-zsh/custom/eza.zsh`, loaded by Oh My Zsh): long listing with hidden files by default, and the usual `ls` options keep working (`-t` and `-S` are translated, as eza gives them another meaning).
 - Docker installed from the official repository (Engine, Buildx, Compose plugin).
 - Dedicated user with `sudo` and `docker` groups, authorized by SSH key.
 - SSH hardening: key authentication only, password authentication disabled, config checked with `sshd -t` before restarting to avoid locking you out.
@@ -57,6 +58,7 @@ The content of `home/` is the content of the user home directory created at the 
 ├── install.sh          # Server setup script
 ├── home/
 │   ├── .claude/        # Claude Code instructions (only if used locally)
+│   ├── .oh-my-zsh/     # Oh My Zsh custom files (eza alias for ls)
 │   ├── dev/            # Your development workspace, one folder per project
 │   ├── internal/       # Infrastructure services, one folder per category
 │   │   ├── routing/    # Traefik

@@ -33,12 +33,13 @@ publickey="$PUBLIC_KEY"
 
 # Script :
 
-log "[1/6] Updating the system and installing utilities (btop, neofetch, fastfetch, zsh)..."
+log "[1/6] Updating the system and installing utilities (btop, neofetch, fastfetch, zsh, eza)..."
 sudo apt update && apt upgrade -y
 sudo apt install btop -y
 sudo apt install neofetch -y
 sudo apt install fastfetch -y
 sudo apt install zsh -y
+sudo apt install eza -y
 
 log "[2/6] Installing Docker..."
 # Add Docker's official GPG key:
@@ -87,7 +88,7 @@ sudo chown -R $username:$username /home/$username/.ssh
 log "[5/6] Installing Oh My Zsh for '$username'..."
 sudo -i -u $username bash -c 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"'
 
-log "[6/6] Copying home/ content to /home/$username..."
+log "[6/6] Copying home/ content to /home/$username (including the eza alias for ls)..."
 # Done after Oh My Zsh so the files from home/ (including dotfiles) take precedence
 sudo cp -a --no-preserve=ownership "$script_dir/home/." "/home/$username/"
 sudo chown -R $username:$username /home/$username
