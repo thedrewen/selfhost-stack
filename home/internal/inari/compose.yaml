@@ -1,0 +1,31 @@
+services:
+  inari:
+    image: thedrewen/inari:stable
+    container_name: inari
+    restart: unless-stopped
+    environment:
+      - API_KEY=${INARI_API_KEY:?INARI_API_KEY is required, copy .env.example to .env}
+      - SERVER_PUBLIC_IP=${INARI_SERVER_PUBLIC_IP:?INARI_SERVER_PUBLIC_IP is required, copy .env.example to .env}
+      - MAX_DISTANCE=${INARI_MAX_DISTANCE:-20}
+      - DEFAULT_CHANNEL=${INARI_DEFAULT_CHANNEL:-default}
+      - PROTOCOL_MODE=${INARI_PROTOCOL_MODE:-udp}
+      - DISABLE_TELEMETRY=${INARI_DISABLE_TELEMETRY:-false}
+    networks:
+      - shared
+    ports:
+      # WebRTC audio goes directly from players to Inari: not proxied by Traefik
+      - '44444:44444/udp'
+      - '44444:44444/tcp'
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=shared
+      - traefik.http.routers.inari.rule=Host(`${INARI_DOMAIN:?INARI_DOMAIN is required, copy .env.example to .env}`)
+      - traefik.http.routers.inari.entrypoints=websecure
+      - traefik.http.routers.inari.tls=true
+      - traefik.http.routers.inari.tls.certresolver=le
+      - traefik.http.services.inari.loadbalancer.server.port=3030
+
+networks:
+  shared:
+    name: shared
+    external: true

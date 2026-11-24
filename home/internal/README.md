@@ -15,3 +15,4 @@ Each service has its own folder with its Docker Compose configuration. The list 
 | [`grafana/`](grafana/README.md) | Dashboards and monitoring, with its related [Prometheus](grafana/prometheus/README.md), [node-exporter](grafana/node-exporter/README.md), [cAdvisor](grafana/cadvisor/README.md), [Loki](grafana/loki/README.md) and [Alloy](grafana/alloy/README.md) |
 | [`forgejo-runner/`](forgejo-runner/README.md) | Runner for Forgejo Actions (CI/CD), with its own Docker-in-Docker |
 | [`forgejo/`](forgejo/README.md) | Git forge (Forgejo) |
+| [`inari/`](inari/README.md) | Proximity voice chat for games (Inari) |
