@@ -13,3 +13,5 @@ Each service has its own folder with its Docker Compose configuration. The list 
 | [`postgres/`](postgres/README.md) | PostgreSQL database, usable as a global Postgres for every service |
 | [`redis/`](redis/README.md) | Redis cache/queue, usable as a global Redis for every service |
 | [`grafana/`](grafana/README.md) | Dashboards and monitoring, with its related [Prometheus](grafana/prometheus/README.md), [node-exporter](grafana/node-exporter/README.md), [cAdvisor](grafana/cadvisor/README.md), [Loki](grafana/loki/README.md) and [Alloy](grafana/alloy/README.md) |
+| [`forgejo-runner/`](forgejo-runner/README.md) | Runner for Forgejo Actions (CI/CD), with its own Docker-in-Docker |
+| [`forgejo/`](forgejo/README.md) | Git forge (Forgejo) |

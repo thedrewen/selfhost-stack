@@ -1,0 +1,28 @@
+networks:
+  shared:
+    name: shared
+    external: true
+
+services:
+  server:
+    image: codeberg.org/forgejo/forgejo:17
+    container_name: forgejo
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    networks:
+      - shared
+    volumes:
+      - ./forgejo:/data
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - '222:22'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.git.rule=Host(`${FORGEJO_DOMAIN:?FORGEJO_DOMAIN is required, copy .env.example to .env}`)"
+      - "traefik.http.routers.git.tls=true"
+      - "traefik.http.routers.git.tls.certresolver=le"
+      - "traefik.http.routers.git.service=git-service"
+      - "traefik.http.services.git-service.loadbalancer.server.port=3000"
+      - "traefik.http.services.git-service.loadbalancer.server.scheme=http"
