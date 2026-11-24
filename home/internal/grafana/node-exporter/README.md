@@ -11,4 +11,4 @@ Exposes the global statistics of the VPS (CPU, memory, disk, network, load…) a
 
 - No port is published: metrics are only reachable from containers on the `shared` network (`node-exporter:9100`).
 - The host filesystem is mounted read-only at `/host` so disk statistics reflect the VPS and not the container.
-- Dashboard: in Grafana, go to Dashboards > New > Import, enter the grafana.com ID `1860` ("Node Exporter Full") and pick the `Prometheus` data source.
+- Dashboard: "Node Exporter Full" (grafana.com ID `1860`) is provisioned automatically in Grafana (`../provisioning/dashboards/node-exporter.json`).

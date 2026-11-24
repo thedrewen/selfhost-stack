@@ -9,7 +9,7 @@ Log collector. It reads the logs of **every Docker container** and sends them to
 
 ## Behavior
 
-- New containers are discovered automatically. Logs carry the labels `container`, `service` and `project` (the last two come from Docker Compose).
+- New containers are discovered automatically. Logs carry the labels `container`, `service` and `project` (the last two come from Docker Compose), plus `job` (the Compose service, or the container name), used by the Loki dashboard.
 - Example query in Grafana: `{service="traefik"}`.
 - No port is published.
 - It mounts the Docker socket (`/var/run/docker.sock`). Even with `:ro`, this gives full control over Docker on the host: keep this service internal.

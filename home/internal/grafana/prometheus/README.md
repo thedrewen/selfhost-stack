@@ -1,6 +1,6 @@
 # prometheus
 
-Metrics database. It scrapes the [Traefik](../../traefik/README.md) metrics the VPS statistics from [node-exporter](../node-exporter/README.md) and the per-container statistics from [cAdvisor](../cadvisor/README.md) and is used as a data source by [Grafana](../README.md).
+Metrics database. It scrapes the [Traefik](../../traefik/README.md) metrics, the VPS statistics from [node-exporter](../node-exporter/README.md) and the per-container statistics from [cAdvisor](../cadvisor/README.md), and is used as a data source by [Grafana](../README.md).
 
 ## Setup
 

@@ -12,4 +12,4 @@ Exposes the CPU, memory, network and disk usage of **each Docker container** as 
 - No port is published: metrics are only reachable from containers on the `shared` network (`cadvisor:8080`).
 - Only Docker containers are reported (`--docker_only=true`).
 - It runs `privileged` with read-only mounts of the host to read the containers' cgroups. Keep it internal.
-- Dashboard: in Grafana, go to Dashboards > New > Import, enter a cAdvisor dashboard ID from grafana.com (for example `14282`) and pick the `Prometheus` data source.
+- Dashboard: "Cadvisor exporter" (grafana.com ID `14282`) is provisioned automatically in Grafana (`../provisioning/dashboards/cadvisor.json`).

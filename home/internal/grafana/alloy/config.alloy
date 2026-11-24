@@ -18,6 +18,19 @@ discovery.relabel "containers" {
     target_label  = "service"
   }
 
+  // "job" is the label the Loki dashboard filters on: container name, or Compose service when there is one
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "job"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    regex         = "(.+)"
+    target_label  = "job"
+  }
+
   rule {
     source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
     target_label  = "project"

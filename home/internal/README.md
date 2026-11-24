@@ -1,6 +1,6 @@
 # internal
 
-Internal programs such as Traefik, Grafana, Postgres, etc. These are infrastructure services: they are not developed by the user and are not exposed directly.
+Internal programs such as Traefik, Grafana, Postgres, etc. These are infrastructure services that are not developed by the user. Databases and exporters are only reachable on the internal `shared` network (or from the server itself); web services such as Grafana or Forgejo are exposed through Traefik.
 
 Each service has its own folder with its Docker Compose configuration. The list below is a starting point: delete the services you do not need and add your own according to your needs.
 
