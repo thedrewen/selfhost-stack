@@ -10,4 +10,5 @@ Each service has its own folder with its Docker Compose configuration. The list 
 | --- | --- |
 | [`traefik/`](traefik/README.md) | Reverse proxy with automatic Let's Encrypt certificates |
 | [`stalwart/`](stalwart/README.md) | Mail server |
-| [`postgres/`](postgres/README.md) | PostgreSQL database |
+| [`postgres/`](postgres/README.md) | PostgreSQL database, usable as a global Postgres for every service |
+| [`redis/`](redis/README.md) | Redis cache/queue, usable as a global Redis for every service |

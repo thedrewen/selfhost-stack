@@ -1,0 +1,25 @@
+services:
+  redis:
+    image: redis:8
+    container_name: redis
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    # No password: Redis refuses other containers in protected mode, and it is only reachable from the 'shared' network and the host loopback
+    command: ["redis-server", "--protected-mode", "no", "--appendonly", "yes"]
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - ./data:/data
+    networks:
+      - shared
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  shared:
+    name: shared
+    external: true
