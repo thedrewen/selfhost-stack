@@ -1,0 +1,26 @@
+services:
+  cadvisor:
+    image: ghcr.io/google/cadvisor:v0.52.1
+    container_name: cadvisor
+    restart: unless-stopped
+    # Needed to read the cgroups and the Docker data of every container
+    privileged: true
+    devices:
+      - /dev/kmsg
+    command:
+      # Only report Docker containers (not every cgroup of the host) to keep the metrics light
+      - --docker_only=true
+      - --housekeeping_interval=30s
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - shared
+
+networks:
+  shared:
+    name: shared
+    external: true

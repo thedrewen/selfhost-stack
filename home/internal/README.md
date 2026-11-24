@@ -12,3 +12,4 @@ Each service has its own folder with its Docker Compose configuration. The list 
 | [`stalwart/`](stalwart/README.md) | Mail server |
 | [`postgres/`](postgres/README.md) | PostgreSQL database, usable as a global Postgres for every service |
 | [`redis/`](redis/README.md) | Redis cache/queue, usable as a global Redis for every service |
+| [`grafana/`](grafana/README.md) | Dashboards and monitoring, with its related [Prometheus](grafana/prometheus/README.md), [node-exporter](grafana/node-exporter/README.md), [cAdvisor](grafana/cadvisor/README.md), [Loki](grafana/loki/README.md) and [Alloy](grafana/alloy/README.md) |

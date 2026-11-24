@@ -1,0 +1,25 @@
+services:
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: prometheus
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=30d
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      # Named volume: the image runs as a non-root user, which a bind-mounted folder created by Docker (owned by root) would not let write
+      - prometheus_data:/prometheus
+    networks:
+      - shared
+
+volumes:
+  prometheus_data:
+
+networks:
+  shared:
+    name: shared
+    external: true

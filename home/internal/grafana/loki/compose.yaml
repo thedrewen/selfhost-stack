@@ -1,0 +1,22 @@
+services:
+  loki:
+    image: grafana/loki:3.5.0
+    container_name: loki
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    command: ["-config.file=/etc/loki/config.yaml"]
+    volumes:
+      - ./config.yaml:/etc/loki/config.yaml:ro
+      # Named volume: the image runs as a non-root user, which a bind-mounted folder created by Docker (owned by root) would not let write
+      - loki_data:/loki
+    networks:
+      - shared
+
+volumes:
+  loki_data:
+
+networks:
+  shared:
+    name: shared
+    external: true
