@@ -4,7 +4,7 @@ Self-hosted proximity voice chat for games ([Inari](https://inari.thedrewen.com)
 
 ## Setup
 
-1. Make sure the `shared` Docker network exists (created by `install.sh`) and that [Traefik](../traefik/README.md) is running.
+1. Make sure the `shared` Docker network exists (created by `install.sh`) and that [Traefik](../../routing/traefik/README.md) is running.
 2. Copy `.env.example` to `.env` and set `INARI_DOMAIN`, `INARI_API_KEY` and `INARI_SERVER_PUBLIC_IP`.
 3. Open port `44444` (UDP and TCP) in your firewall.
 4. Start it: `docker compose up -d`.
