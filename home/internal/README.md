@@ -9,3 +9,5 @@ Each service has its own folder with its Docker Compose configuration. The list 
 | Folder | Description |
 | --- | --- |
 | [`traefik/`](traefik/README.md) | Reverse proxy with automatic Let's Encrypt certificates |
+| [`stalwart/`](stalwart/README.md) | Mail server |
+| [`postgres/`](postgres/README.md) | PostgreSQL database |
