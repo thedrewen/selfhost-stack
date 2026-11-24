@@ -1,0 +1,8 @@
+# Sites probed by blackbox-exporter (availability, response time, TLS certificate expiry).
+# Prometheus reloads this file by itself (about every minute): no restart needed after editing it.
+# Add one URL per site, for example:
+#
+# - targets:
+#     - https://example.com
+#     - https://git.example.com
+[]

@@ -11,6 +11,8 @@ services:
       - --storage.tsdb.retention.time=30d
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      # Whole folder (not a single file) so edits made with any editor are seen by the container
+      - ./targets:/etc/prometheus/targets:ro
       # Named volume: the image runs as a non-root user, which a bind-mounted folder created by Docker (owned by root) would not let write
       - prometheus_data:/prometheus
     networks:

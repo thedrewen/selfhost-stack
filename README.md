@@ -27,7 +27,8 @@ Each service lives in its own folder with a `compose.yaml`, an `.env.example` wh
 | Databases | [Redis](home/internal/databases/redis/README.md) | Global cache/queue for every service |
 | Monitoring | [Grafana](home/internal/monitoring/grafana/README.md) | Dashboards with pre-provisioned data sources and dashboards |
 | Monitoring | [Prometheus](home/internal/monitoring/grafana/prometheus/README.md) | Metrics storage |
-| Monitoring | [node-exporter](home/internal/monitoring/grafana/node-exporter/README.md) / [cAdvisor](home/internal/monitoring/grafana/cadvisor/README.md) / [postgres-exporter](home/internal/monitoring/grafana/postgres-exporter/README.md) | VPS, per-container and Postgres metrics |
+| Monitoring | [node-exporter](home/internal/monitoring/grafana/node-exporter/README.md) / [cAdvisor](home/internal/monitoring/grafana/cadvisor/README.md) / [postgres-exporter](home/internal/monitoring/grafana/postgres-exporter/README.md) / [redis-exporter](home/internal/monitoring/grafana/redis-exporter/README.md) | VPS, per-container, Postgres and Redis metrics |
+| Monitoring | [blackbox-exporter](home/internal/monitoring/grafana/blackbox-exporter/README.md) | Availability and TLS certificate expiry of your public sites |
 | Monitoring | [Loki](home/internal/monitoring/grafana/loki/README.md) / [Alloy](home/internal/monitoring/grafana/alloy/README.md) | Centralized logs of every container |
 | Mail | [Stalwart](home/internal/mail/stalwart/README.md) | Mail server |
 | Games | [Inari](home/internal/games/inari/README.md) | Proximity voice chat for game servers |

@@ -21,3 +21,37 @@ scrape_configs:
   - job_name: postgres-exporter
     static_configs:
       - targets: ["postgres-exporter:9187"]
+
+  # Prometheus itself
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Global Redis statistics, see ../redis-exporter
+  - job_name: redis-exporter
+    static_configs:
+      - targets: ["redis-exporter:9121"]
+
+  # Forgejo metrics (enabled with FORGEJO__metrics__ENABLED in git/forgejo/compose.yaml). Scraped directly on the shared
+  # network: the /metrics path is not exposed by Traefik
+  - job_name: forgejo
+    static_configs:
+      - targets: ["forgejo:3000"]
+
+  # Availability and certificate expiry of the public sites, see ../blackbox-exporter. The sites to probe are listed in
+  # targets/blackbox.yml, which is reloaded automatically (no restart needed)
+  - job_name: blackbox
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    file_sd_configs:
+      - files:
+          - /etc/prometheus/targets/blackbox.yml
+        refresh_interval: 1m
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

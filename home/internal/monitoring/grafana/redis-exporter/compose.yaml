@@ -1,0 +1,17 @@
+services:
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.99.0
+    container_name: redis-exporter
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      # The global Redis has no password and is only reachable from the 'shared' network
+      REDIS_ADDR: redis://redis:6379
+    networks:
+      - shared
+
+networks:
+  shared:
+    name: shared
+    external: true

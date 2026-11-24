@@ -10,7 +10,9 @@ services:
     environment:
       - USER_UID=1000
       - USER_GID=1000
-    restart: always
+      # Prometheus metrics on /metrics, scraped on the shared network (not exposed by Traefik, see the router rule)
+      - FORGEJO__metrics__ENABLED=true
+    restart: unless-stopped
     networks:
       - shared
     volumes:
@@ -20,7 +22,7 @@ services:
       - '222:22'
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.git.rule=Host(`${FORGEJO_DOMAIN:?FORGEJO_DOMAIN is required, copy .env.example to .env}`)"
+      - "traefik.http.routers.git.rule=Host(`${FORGEJO_DOMAIN:?FORGEJO_DOMAIN is required, copy .env.example to .env}`) && !PathPrefix(`/metrics`)"
       - "traefik.http.routers.git.tls=true"
       - "traefik.http.routers.git.tls.certresolver=le"
       - "traefik.http.routers.git.service=git-service"
