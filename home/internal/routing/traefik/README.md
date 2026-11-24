@@ -15,7 +15,7 @@ Reverse proxy of the stack. It routes HTTP/HTTPS traffic to the containers that 
 - Containers are **not** exposed by default (`exposedbydefault=false`): a container must set `traefik.enable=true` and be on the `shared` network.
 - Extra static files (TLS options, middlewares…) can be put in `./dynamic/`; custom certificates in `./certs/`.
 - The dashboard is only bound to `127.0.0.1:8080` and has no authentication (`api.insecure=true`). Reach it through an SSH tunnel: `ssh -L 8080:127.0.0.1:8080 <user>@<server>`, then open `http://localhost:8080`.
-- Prometheus metrics are enabled on the dashboard entrypoint (`traefik:8080/metrics`) and scraped by [Prometheus](../grafana/prometheus/README.md), then shown in [Grafana](../grafana/README.md).
+- Prometheus metrics are enabled on the dashboard entrypoint (`traefik:8080/metrics`) and scraped by [Prometheus](../../monitoring/grafana/prometheus/README.md), then shown in [Grafana](../../monitoring/grafana/README.md).
 
 ## Exposing a service
 

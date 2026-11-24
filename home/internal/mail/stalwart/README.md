@@ -4,7 +4,7 @@ Mail server ([Stalwart](https://stalw.art/)), routed by Traefik for its web inte
 
 ## Setup
 
-1. Make sure the `shared` Docker network exists (created by `install.sh`) and that [Traefik](../traefik/README.md) is running.
+1. Make sure the `shared` Docker network exists (created by `install.sh`) and that [Traefik](../../routing/traefik/README.md) is running.
 2. Copy `.env.example` to `.env` and set `MAIL_HOSTNAME` (e.g. `mail.example.com`).
 3. Start it: `docker compose up -d`.
 
@@ -16,7 +16,7 @@ Mail server ([Stalwart](https://stalw.art/)), routed by Traefik for its web inte
 
 ## Storage
 
-Stalwart can use the global [Postgres](../postgres/README.md) and [Redis](../redis/README.md) of the stack (host `postgres` / `redis` on the `shared` network) instead of its embedded storage. Create a dedicated database and user for it in Postgres first.
+Stalwart can use the global [Postgres](../../databases/postgres/README.md) and [Redis](../../databases/redis/README.md) of the stack (host `postgres` / `redis` on the `shared` network) instead of its embedded storage. Create a dedicated database and user for it in Postgres first.
 
 ## DNS
 

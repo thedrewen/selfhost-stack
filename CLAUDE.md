@@ -15,7 +15,7 @@ Target platform: Debian 13 only.
 - `scripts/`: server hardening script(s) (to come).
 - `home/`: its content is the content of the user home directory created at the end of the server setup. `home/.claude/CLAUDE.md` is a copy of the global `~/.claude/CLAUDE.md`, used only if Claude Code is installed locally on the machine (keep it in sync when the global rules change). It also holds three directories, each meant to hold its own Compose config:
   - `home/dev/`: workspace where the user develops, one folder per project/repository.
-  - `home/internal/`: internal infrastructure programs (Traefik, Grafana, Postgres…), not developed by the user and not exposed directly.
+  - `home/internal/`: internal infrastructure programs (Traefik, Grafana, Postgres…), not developed by the user and not exposed directly. Grouped by category: `routing/`, `git/`, `databases/`, `monitoring/`, `mail/`, `games/` (one folder per service inside).
   - `home/prod/`: user-developed programs/sites subject to automatic deployment (Forgejo/GitHub/Gitea action), plus game server folders (e.g. Minecraft).
 
 To be completed once the Compose files exist (module layout, networks, volumes, secrets).

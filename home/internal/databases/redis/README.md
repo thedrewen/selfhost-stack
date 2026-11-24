@@ -1,6 +1,6 @@
 # redis
 
-Redis instance that can be used as a global cache/queue by the other services of the stack, such as [Stalwart](../stalwart/README.md). Any other service, internal or developed by you (`home/prod/`), can use it by joining the `shared` network.
+Redis instance that can be used as a global cache/queue by the other services of the stack, such as [Stalwart](../../mail/stalwart/README.md). Any other service, internal or developed by you (`home/prod/`), can use it by joining the `shared` network.
 
 ## Setup
 

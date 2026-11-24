@@ -1,26 +1,78 @@
 # selfhost-stack
-Production-ready base for any VPS/VDS: server hardening script plus a modular Docker Compose infrastructure.
+
+Production-ready base for any VPS/VDS: a server hardening script plus a modular Docker Compose infrastructure. Run one script on a fresh server, then start only the services you need.
+
+## Features
+
+### Server setup (`install.sh`)
+
+- System update and handy tools: `btop`, `neofetch`, `fastfetch`, `zsh` with Oh My Zsh.
+- Docker installed from the official repository (Engine, Buildx, Compose plugin).
+- Dedicated user with `sudo` and `docker` groups, authorized by SSH key.
+- SSH hardening: key authentication only, password authentication disabled, config checked with `sshd -t` before restarting to avoid locking you out.
+- The `shared` Docker network is created for the whole stack.
+- The content of `home/` is copied into the new user's home directory.
+
+### Services (`home/internal/`)
+
+Each service lives in its own folder with a `compose.yaml`, an `.env.example` when needed, and a README. Delete the ones you do not need.
+
+| Category | Service | Description |
+| --- | --- | --- |
+| Routing | [Traefik](home/internal/routing/traefik/README.md) | Reverse proxy with automatic Let's Encrypt certificates |
+| Git | [Forgejo](home/internal/git/forgejo/README.md) | Self-hosted Git forge |
+| Git | [Forgejo Runner](home/internal/git/forgejo-runner/README.md) | CI/CD runner for Forgejo Actions, with its own Docker-in-Docker |
+| Databases | [Postgres](home/internal/databases/postgres/README.md) | Global PostgreSQL database for every service |
+| Databases | [Redis](home/internal/databases/redis/README.md) | Global cache/queue for every service |
+| Monitoring | [Grafana](home/internal/monitoring/grafana/README.md) | Dashboards with pre-provisioned data sources and dashboards |
+| Monitoring | [Prometheus](home/internal/monitoring/grafana/prometheus/README.md) | Metrics storage |
+| Monitoring | [node-exporter](home/internal/monitoring/grafana/node-exporter/README.md) / [cAdvisor](home/internal/monitoring/grafana/cadvisor/README.md) | VPS and per-container metrics |
+| Monitoring | [Loki](home/internal/monitoring/grafana/loki/README.md) / [Alloy](home/internal/monitoring/grafana/alloy/README.md) | Centralized logs of every container |
+| Mail | [Stalwart](home/internal/mail/stalwart/README.md) | Mail server |
+| Games | [Inari](home/internal/games/inari/README.md) | Proximity voice chat for game servers |
+
+Databases and exporters are only reachable on the internal `shared` network; web services are exposed through Traefik over HTTPS.
 
 ## Compatibility
 
-Only compatible with Debian 13.
+Debian 13 only.
+
+## Quick start
+
+1. Clone the repository on the server.
+2. Copy `.env.example` to `.env` and fill in the variables:
+   - `USERNAME`: name of the user created by the script.
+   - `PASSWORD`: password of that user.
+   - `PUBLIC_KEY`: public SSH key authorized for that user.
+3. Run `./install.sh`.
+4. **Before closing the session**, open a new terminal and check that you can log in as the new user with your SSH key.
+5. Log in as that user, then for each service you want: go to `internal/<category>/<service>/`, copy `.env.example` to `.env`, fill it in and run `docker compose up -d`. Start [Traefik](home/internal/routing/traefik/README.md) first, as other web services depend on it.
 
 ## Layout
 
 The content of `home/` is the content of the user home directory created at the end of the server setup (it is copied as-is into that user's home).
 
-- `home/.claude/CLAUDE.md`: global Claude Code instructions, only relevant if Claude Code is installed locally on the machine. It is a copy of the maintainer's global `~/.claude/CLAUDE.md`.
-- `home/dev/`: see [home/dev/README.md](home/dev/README.md)
-- `home/internal/`: Docker Compose configurations of the internal services. The list of available configurations is in [home/internal/README.md](home/internal/README.md); you can delete or add configurations according to your needs.
-- `home/prod/`: see [home/prod/README.md](home/prod/README.md)
+```
+.
+├── install.sh          # Server setup script
+├── home/
+│   ├── .claude/        # Claude Code instructions (only if used locally)
+│   ├── dev/            # Your development workspace, one folder per project
+│   ├── internal/       # Infrastructure services, one folder per category
+│   │   ├── routing/    # Traefik
+│   │   ├── git/        # Forgejo, Forgejo Runner
+│   │   ├── databases/  # Postgres, Redis
+│   │   ├── monitoring/ # Grafana, Prometheus, Loki…
+│   │   ├── mail/       # Stalwart
+│   │   └── games/      # Inari
+│   └── prod/           # Your deployed programs and game servers
+└── scripts/            # Hardening scripts (to come)
+```
 
-## Configuration
-
-Copy `.env.example` to `.env` and fill in the variables before running `install.sh`:
-
-- `USERNAME`: name of the user created by the script.
-- `PASSWORD`: password of that user.
-- `PUBLIC_KEY`: public SSH key authorized for that user.
+- [`home/dev/`](home/dev/README.md): workspace where you develop.
+- [`home/internal/`](home/internal/README.md): internal services, not developed by you. You can delete or add configurations according to your needs.
+- [`home/prod/`](home/prod/README.md): programs and websites subject to automatic deployment (e.g. a Forgejo/GitHub/Gitea action), plus game server folders such as Minecraft.
+- `home/.claude/CLAUDE.md`: a copy of the maintainer's global Claude Code instructions, only relevant if Claude Code is installed locally.
 
 ## Networking
 
@@ -32,3 +84,7 @@ networks:
     name: shared
     external: true
 ```
+
+## License
+
+See [LICENSE](LICENSE).

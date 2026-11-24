@@ -4,7 +4,7 @@ Dashboards and monitoring UI, routed by Traefik.
 
 ## Setup
 
-1. Make sure the `shared` Docker network exists (created by `install.sh`) and that [Traefik](../traefik/README.md) is running.
+1. Make sure the `shared` Docker network exists (created by `install.sh`) and that [Traefik](../../routing/traefik/README.md) is running.
 2. Copy `.env.example` to `.env` and set `GRAFANA_ADMIN_PASSWORD` and `GRAFANA_DOMAIN` (`GRAFANA_ADMIN_USER` defaults to `admin`).
 3. Start it: `docker compose up -d`.
 
@@ -16,7 +16,7 @@ Dashboards and monitoring UI, routed by Traefik.
 - Data (users, dashboards, settings) is stored in the `grafana-data` Docker volume and in an embedded SQLite database: Grafana does not need an external database. Back the volume up.
 - The [Prometheus](prometheus/README.md) and [Loki](loki/README.md) data sources are provisioned automatically from `./provisioning/datasources`.
 - Dashboards in `./provisioning/dashboards/` are loaded automatically (add other `.json` files there): the official [Traefik dashboard](https://grafana.com/grafana/dashboards/17346) (ID `17346`) the [Logs / App dashboard](https://grafana.com/grafana/dashboards/13639) (ID `13639`) for the Loki logs (pick the app with the `app` variable), the [Node Exporter Full dashboard](https://grafana.com/grafana/dashboards/1860) (ID `1860`) for the VPS and the [Cadvisor exporter dashboard](https://grafana.com/grafana/dashboards/14282) (ID `14282`) for the containers.
-- Optional: Grafana can store its own data in the global [Postgres](../postgres/README.md) instead of SQLite (`GF_DATABASE_*` variables, host `postgres` on the `shared` network), or query it as a data source for dashboards. Neither is configured by default.
+- Optional: Grafana can store its own data in the global [Postgres](../../databases/postgres/README.md) instead of SQLite (`GF_DATABASE_*` variables, host `postgres` on the `shared` network), or query it as a data source for dashboards. Neither is configured by default.
 
 ## Monitoring stack setup
 
