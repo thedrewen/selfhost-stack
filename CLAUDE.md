@@ -28,6 +28,7 @@ These rules apply to all projects (copied from the global rules).
 
 - `develop` is the main development branch; `main` is for production only.
 - One task at a time, on a dedicated branch created from `develop` (`feat/<topic>`, `fix/<topic>`, `chore/<topic>`). Never commit directly to `develop` or `main`.
+- **Project override (selfhost-stack): work directly on `develop`, without creating task branches.** Never commit to `main`; still commit only when the user asks.
 - Once a task is validated: **squash** merge into `develop` (one commit per task), then delete the branch locally and on the remote.
 - Commits follow Conventional Commits (`feat:`, `fix:`, `refactor:`…).
 

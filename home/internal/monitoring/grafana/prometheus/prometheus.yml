@@ -16,3 +16,8 @@ scrape_configs:
   - job_name: cadvisor
     static_configs:
       - targets: ["cadvisor:8080"]
+
+  # Global Postgres statistics, see ../postgres-exporter. The job name is the one the Grafana dashboard filters on
+  - job_name: postgres-exporter
+    static_configs:
+      - targets: ["postgres-exporter:9187"]

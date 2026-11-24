@@ -1,0 +1,19 @@
+services:
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.21.1
+    container_name: postgres-exporter
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      # Same superuser as the global Postgres: the exporter only runs read-only statistics queries
+      DATA_SOURCE_URI: postgres:5432/${POSTGRES_DB:?POSTGRES_DB is required, copy .env.example to .env}?sslmode=disable
+      DATA_SOURCE_USER: ${POSTGRES_USER:?POSTGRES_USER is required, copy .env.example to .env}
+      DATA_SOURCE_PASS: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required, copy .env.example to .env}
+    networks:
+      - shared
+
+networks:
+  shared:
+    name: shared
+    external: true
