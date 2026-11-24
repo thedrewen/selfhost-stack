@@ -11,9 +11,9 @@ PostgreSQL database that can be used as a global Postgres by every service of th
 ## Behavior
 
 - The database is only reachable from containers on the `shared` network (host `postgres`, port `5432`) and from the server itself on `127.0.0.1:5432`. It is never exposed to the internet: do not change the port binding to `0.0.0.0`. To reach it from your computer, use an SSH tunnel: `ssh -L 5432:127.0.0.1:5432 <user>@<server>`.
-- Data is stored in `./data`, mounted on `/var/lib/postgresql`: since PostgreSQL 18 the image stores data in a versioned subfolder (`/var/lib/postgresql/18/docker`), so mounting `/var/lib/postgresql/data` as before would not work. Back it up (e.g. with `pg_dump`).
+- Data is stored in `./data`, mounted on `/var/lib/postgresql`: since PostgreSQL 18 the image stores data in a versioned subfolder (`/var/lib/postgresql/<major>/docker`), so mounting `/var/lib/postgresql/data` as before would not work. Back it up (e.g. with `pg_dump`).
 - `POSTGRES_*` variables are only used on the **first start**, when `./data` is empty. Changing them afterwards does not change the existing user, password or database.
-- The major version is pinned (`postgres:18`). Upgrading to another major version requires a dump/restore.
+- The major version is pinned (`postgres:19`). Upgrading to another major version requires a dump/restore.
 
 ## Usage
 

@@ -1,6 +1,6 @@
 services:
   docker-in-docker:
-    image: docker:dind
+    image: docker:29-dind
     container_name: 'docker_dind'
     privileged: 'true'
     command: ['dockerd', '-H', 'tcp://0.0.0.0:2375', '--tls=false']
