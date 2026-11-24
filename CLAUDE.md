@@ -8,6 +8,8 @@ selfhost-stack: production-ready base for any VPS/VDS — a server hardening scr
 
 Current state: the repository is a skeleton (no build, lint or test tooling defined). `scripts/` is empty, and `home/{dev,prod,internal}/` only contain empty READMEs. There are no commands to document yet: add them here as soon as the stack/tooling is chosen.
 
+Target platform: Debian 13 only.
+
 ## Architecture
 
 - `scripts/`: server hardening script(s) (to come).
