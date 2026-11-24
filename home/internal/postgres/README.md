@@ -1,6 +1,6 @@
 # postgres
 
-PostgreSQL database that can be used as a global Postgres by every service of the stack: create one database (and ideally one user) per service instead of running one Postgres per project.
+PostgreSQL database that can be used as a global Postgres by every service of the stack: create one database (and ideally one user) per service instead of running one Postgres per project. Any service, whether internal (such as [Stalwart](../stalwart/README.md)) or developed by you (`home/prod/`), can use it as its database: just join the `shared` network.
 
 ## Setup
 
