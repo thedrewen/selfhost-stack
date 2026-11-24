@@ -19,6 +19,19 @@ Dashboards and monitoring UI, routed by Traefik.
 - VPS dashboard: import the grafana.com ID `1860` ("Node Exporter Full"), see [node-exporter](node-exporter/README.md).
 - Grafana can use the global [Postgres](../postgres/README.md) as a data source (host `postgres` on the `shared` network).
 
+## Monitoring stack setup
+
+Each service below has its own `compose.yaml`: run `docker compose up -d` in each folder. Only Grafana needs a `.env`; the other ones need no configuration. Start them in this order:
+
+1. [`prometheus/`](prometheus/README.md) (needs Traefik running): stores the metrics and scrapes the targets listed in `prometheus/prometheus.yml`.
+2. Exporters, which expose metrics for Prometheus (`node-exporter` and `cadvisor` need nothing else, Traefik already exposes its own):
+   - [`node-exporter/`](node-exporter/README.md): VPS statistics (CPU, memory, disk, network). Dashboard ID `1860`.
+   - [`cadvisor/`](cadvisor/README.md): per-container statistics. Dashboard: a cAdvisor ID from grafana.com (for example `14282`).
+3. [`loki/`](loki/README.md) then [`alloy/`](alloy/README.md): logs. Loki stores them, Alloy reads the logs of every container and sends them to Loki. Query them in Grafana, Explore > `Loki` (e.g. `{service="traefik"}`).
+4. Grafana itself (this folder): the `Prometheus` and `Loki` data sources are already provisioned, then import the dashboards above (Dashboards > New > Import).
+
+To monitor another service, add a job to `prometheus/prometheus.yml` with its exporter (`host:port` on the `shared` network) and restart Prometheus (`docker compose restart prometheus`).
+
 ## Related services
 
 These services only exist to feed Grafana, so they live in this folder:
