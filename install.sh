@@ -59,6 +59,10 @@ EOF
 sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+# Compose files declare this network as external, so it must exist before any "docker compose up"
+log "Creating the 'shared' Docker network..."
+sudo docker network inspect shared >/dev/null 2>&1 || sudo docker network create shared
+
 log "[3/6] Creating user '$username' (sudo + docker groups)..."
 # Create the user with the specified username
 sudo useradd -m -s /bin/bash $username

@@ -1,0 +1,51 @@
+services:
+  traefik:
+    image: traefik:v3.7
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+    networks:
+      - shared
+
+    ports:
+      - "80:80"
+      - "443:443"
+      - "127.0.0.1:8080:8080"
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./certs:/certs:ro
+      - ./dynamic:/dynamic:ro
+      - ./letsencrypt:/letsencrypt
+    command:
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+
+      - "--providers.file.directory=/dynamic/"
+
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=shared"
+
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+
+      - "--log.level=INFO"
+      - "--accesslog=true"
+      - "--metrics.prometheus=true"
+
+      - "--certificatesresolvers.le.acme.email=${ACME_EMAIL:?ACME_EMAIL is required, copy .env.example to .env}"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+      - "--entrypoints.websecure.http.tls.certresolver=le"
+
+networks:
+  shared:
+    name: shared
+    external: true
