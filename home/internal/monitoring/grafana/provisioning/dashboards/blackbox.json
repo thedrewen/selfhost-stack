@@ -606,6 +606,83 @@
       "type": "table"
     },
     {
+      "datasource": "prometheus",
+      "description": "UP/DOWN history of each probed instance (probe_success). Red = down.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 80,
+            "lineWidth": 0
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red",
+                  "index": 0
+                },
+                "1": {
+                  "text": "UP",
+                  "color": "green",
+                  "index": 1
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 9,
+      "options": {
+        "alignValue": "center",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "mergeValues": true,
+        "rowHeight": 0.8,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "expr": "probe_success{job=~\"$job\", instance=~\"$instance\"}",
+          "interval": "",
+          "legendFormat": "{{ instance }}",
+          "refId": "A"
+        }
+      ],
+      "title": "Service Status (UP / DOWN)",
+      "type": "state-timeline"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -624,7 +701,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 4,
@@ -713,7 +790,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 24
       },
       "id": 8,
       "panels": [
@@ -736,7 +813,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 27
+            "y": 33
           },
           "hiddenSeries": false,
           "id": 6,
