@@ -18,3 +18,4 @@ Self-hosted proximity voice chat for games ([Inari](https://inari.thedrewen.com)
 - Each channel is an isolated voice space: use several channels to serve several game servers with one instance.
 - Anonymous telemetry is enabled by default; set `INARI_DISABLE_TELEMETRY=true` to disable it.
 - Reference: [configuration](https://inari.thedrewen.com/guides/configuration/) and [reverse proxy](https://inari.thedrewen.com/guides/reverse-proxy/).
+- Monitoring: Inari has no `/metrics` endpoint, so [`inari-exporter`](../../monitoring/grafana/inari-exporter/README.md) polls its REST API instead and feeds a Grafana dashboard (channels, connected users, most active users). It can monitor this instance and any number of other Inari instances by URL — list them in `../../monitoring/grafana/prometheus/targets/inari.yml`.

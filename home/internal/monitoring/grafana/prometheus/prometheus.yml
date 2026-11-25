@@ -73,3 +73,20 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: blackbox-exporter:9115
+
+  # Inari instances (self-hosted proximity voice chat): channels, connected users, and their history over time, see
+  # ../inari-exporter (Inari itself has no /metrics path). The instances to probe are listed in targets/inari.yml, which
+  # is reloaded automatically (no restart needed)
+  - job_name: inari
+    metrics_path: /probe
+    file_sd_configs:
+      - files:
+          - /etc/prometheus/targets/inari.yml
+        refresh_interval: 1m
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: inari-exporter:9900

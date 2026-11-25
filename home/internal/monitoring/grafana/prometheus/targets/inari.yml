@@ -1,0 +1,8 @@
+# Inari instances probed by inari-exporter (channels, connected users, creation/deletion history).
+# Prometheus reloads this file by itself (about every minute): no restart needed after editing it.
+# Add one URL per Inari instance to monitor (your own, see ../../games/inari/README.md, and/or any other instance), for
+# example:
+#
+# - targets:
+#     - https://inari.example.com
+[]

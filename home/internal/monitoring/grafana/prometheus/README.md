@@ -12,4 +12,5 @@ Metrics database. It scrapes the [Traefik](../../../routing/traefik/README.md) m
 - No port is published: it is only reachable from containers on the `shared` network (host `prometheus`, port `9090`).
 - Scrape targets are listed in `prometheus.yml`. Add a job there to monitor another service, then restart the container.
 - The sites probed by [blackbox-exporter](../blackbox-exporter/README.md) are listed in `targets/blackbox.yml` (empty by default). This file is reloaded automatically within a minute: no restart needed. Use the same mechanism (`file_sd_configs`) for any other list of targets that changes often.
+- The Inari instances probed by [inari-exporter](../inari-exporter/README.md) are listed the same way, in `targets/inari.yml` (empty by default).
 - Metrics are kept for 30 days in the `prometheus_data` Docker volume.
