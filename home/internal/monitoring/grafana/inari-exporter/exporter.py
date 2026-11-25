@@ -38,6 +38,7 @@ def _lock_for(target: str) -> threading.Lock:
                 "created_total": 0,
                 "deleted_total": 0,
                 "user_seconds": {},  # (channel, display_name) -> cumulative seconds
+                "connected_now": {},  # (channel, display_name, is_connector) -> client count
                 "last_poll": None,
             }
         return _state_locks[target]
@@ -94,6 +95,7 @@ def probe(target: str) -> bytes:
             state["last_poll"] = now
 
             new_channels = {}
+            connected_now = {}
             for channel in channels:
                 name = channel["name"]
                 new_channels[name] = {
@@ -103,14 +105,24 @@ def probe(target: str) -> bytes:
                 }
 
                 detail = details.get(name)
-                if elapsed > 0 and detail:
+                if detail:
                     for client in detail.get("clients") or []:
-                        if client.get("is_connector"):
-                            continue  # the connector linking Inari to the game server, not a player
-                        key = (name, client.get("display_name", ""))
-                        state["user_seconds"][key] = state["user_seconds"].get(key, 0.0) + elapsed
+                        is_connector = bool(client.get("is_connector"))
+                        # The connector's own display_name is whatever the game plugin sent, not a
+                        # player: show it as "Connector" instead.
+                        display_name = "Connector" if is_connector else client.get("display_name", "")
+
+                        now_key = (name, display_name, is_connector)
+                        connected_now[now_key] = connected_now.get(now_key, 0) + 1
+
+                        if elapsed > 0 and not is_connector:
+                            seconds_key = (name, display_name)
+                            state["user_seconds"][seconds_key] = (
+                                state["user_seconds"].get(seconds_key, 0.0) + elapsed
+                            )
 
             state["channels"] = new_channels
+            state["connected_now"] = connected_now
 
         metrics = _build_metrics(target, is_up, state)
 
@@ -167,6 +179,17 @@ def _build_metrics(target: str, is_up: bool, state: dict) -> list:
             info["clients_count"],
         )
     metrics.append(channel_clients)
+
+    connected_now = GaugeMetricFamily(
+        "inari_connected_user",
+        'Users currently connected (usually 1, more if several share the same name); a '
+        'connector always reports display_name="Connector"',
+        labels=["target", "channel", "display_name", "is_connector"],
+    )
+    current = state.get("connected_now", {}) if is_up else {}
+    for (channel, display_name, is_connector), count in current.items():
+        connected_now.add_metric([target, channel, display_name, str(is_connector).lower()], count)
+    metrics.append(connected_now)
 
     created_total = CounterMetricFamily(
         "inari_channels_created",

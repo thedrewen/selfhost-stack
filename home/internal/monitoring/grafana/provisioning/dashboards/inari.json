@@ -11,7 +11,7 @@
   "graphTooltip": 1,
   "refresh": "30s",
   "schemaVersion": 39,
-  "version": 1,
+  "version": 2,
   "style": "dark",
   "time": {
     "from": "now-24h",
@@ -723,6 +723,130 @@
       ]
     },
     {
+      "id": 25,
+      "type": "table",
+      "title": "Users connected right now",
+      "description": "Live snapshot of who is in which channel. A connector shows up as display_name \"Connector\".",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "left",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "is_connector"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "true": {
+                        "text": "yes"
+                      },
+                      "false": {
+                        "text": "no"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              },
+              {
+                "id": "displayName",
+                "value": "Clients"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "displayName": "channel",
+            "desc": false
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "inari_connected_user{target=~\"$target\"}",
+          "legendFormat": "",
+          "refId": "A",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true
+            },
+            "indexByName": {
+              "target": 0,
+              "channel": 1,
+              "display_name": 2,
+              "is_connector": 3,
+              "Value": 4
+            },
+            "renameByName": {}
+          }
+        }
+      ]
+    },
+    {
       "id": 13,
       "type": "table",
       "title": "Most connected users (all-time since exporter start)",
@@ -735,7 +859,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 28
       },
       "fieldConfig": {
         "defaults": {

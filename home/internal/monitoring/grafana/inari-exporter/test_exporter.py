@@ -122,8 +122,19 @@ class ProbeTest(unittest.TestCase):
         self.assertIn(f'inari_channel_clients_total{{target="{self.target}"}} 2.0', body)
         self.assertIn('channel="default"', body)
         self.assertIn('permanent="true"', body)
-        # First poll of this target: no elapsed time yet, so no connected-seconds credited.
-        self.assertNotIn("Alice", body)
+        # The "currently connected" snapshot shows both right away, even on the very first poll...
+        self.assertIn(
+            f'inari_connected_user{{channel="default",display_name="Alice",is_connector="false",'
+            f'target="{self.target}"}} 1.0',
+            body,
+        )
+        self.assertIn(
+            f'inari_connected_user{{channel="default",display_name="Connector",is_connector="true",'
+            f'target="{self.target}"}} 1.0',
+            body,
+        )
+        # ...but the cumulative counter needs an elapsed interval to credit: no baseline yet.
+        self.assertNotIn("inari_user_connected_seconds_total{", body)
 
         time.sleep(1.1)
 
@@ -132,12 +143,21 @@ class ProbeTest(unittest.TestCase):
         body = exporter.probe(self.target).decode()
         self.assertIn(f'inari_channels_created_total{{target="{self.target}"}} 1.0', body)
         self.assertIn(f'inari_channels_deleted_total{{target="{self.target}"}} 0.0', body)
-        self.assertIn('channel="squad-1",display_name="Bob"', body)
-        # The connector is never credited as a connected user.
+        self.assertIn(
+            f'inari_connected_user{{channel="squad-1",display_name="Bob",is_connector="false",'
+            f'target="{self.target}"}} 1.0',
+            body,
+        )
+        # The exporter cannot tell *when* within the interval Bob joined, so like everyone
+        # present at this poll he is credited with the whole elapsed time since the last one
+        # (an over-estimate for someone who just joined - the same approximation as above).
+        self.assertIn('inari_user_connected_seconds_total{channel="squad-1",display_name="Bob"', body)
+        # The connector's raw display_name is never used, only the forced "Connector".
         self.assertNotIn("connector-bot", body)
         # Alice already left by the time of this poll (round 2's "default" has 0 clients): a
-        # user who disconnects between two polls gets no credit for that interval. Known
-        # approximation of polling-based duration tracking, documented in the README.
+        # user who disconnects between two polls gets no credit for that interval, and drops
+        # out of the "currently connected" snapshot immediately. Known approximation of
+        # polling-based duration tracking, documented in the README.
         self.assertNotIn("Alice", body)
 
         time.sleep(1.1)
@@ -148,8 +168,14 @@ class ProbeTest(unittest.TestCase):
         self.assertIn(f'inari_channels_total{{target="{self.target}"}} 0.0', body)
         self.assertIn(f'inari_channels_created_total{{target="{self.target}"}} 1.0', body)
         self.assertIn(f'inari_channels_deleted_total{{target="{self.target}"}} 2.0', body)
-        # Bob's cumulative time survives after his channel is gone (all-time leaderboard).
-        self.assertIn('channel="squad-1",display_name="Bob"', body)
+        # Bob's cumulative time survives after his channel is gone (all-time leaderboard)...
+        self.assertIn(
+            f'inari_user_connected_seconds_total{{channel="squad-1",display_name="Bob",'
+            f'target="{self.target}"}}',
+            body,
+        )
+        # ...but he is gone from the "currently connected" snapshot, like everyone else.
+        self.assertNotIn("inari_connected_user{", body)
 
     def test_down_target(self):
         body = exporter.probe("http://127.0.0.1:1").decode()  # nothing listens there
