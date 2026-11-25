@@ -18,6 +18,9 @@ CHANNELS_ROUND_1 = [
     {"name": "default", "has_connector": True, "clients_count": 2, "permanent": True},
 ]
 CLIENTS_ROUND_1 = {
+    # Real-world behavior (seen on https://inari-demo.thedrewen.com/api/channels/default):
+    # clients_count counts the connector, but it is never actually listed among "clients".
+    # The only reliable signal for its presence is the channel's own has_connector flag.
     "default": {
         "name": "default",
         "has_connector": True,
@@ -33,25 +36,25 @@ CLIENTS_ROUND_1 = {
                 "head_orientation": [0, 0, 0],
                 "is_connector": False,
             },
-            {
-                "display_name": "connector-bot",
-                "is_force_muted": False,
-                "is_force_deafened": False,
-                "is_muted": False,
-                "is_deafened": False,
-                "head_orientation": [0, 0, 0],
-                "is_connector": True,
-            },
         ],
     },
 }
 
-# Round 2: "default" lost its only human, a new ephemeral channel "squad-1" appeared.
+# Round 2: "default" lost its only human but its connector is still there (clients_count=1:
+# just the connector, clients=[] like the real-world example above), a new ephemeral channel
+# "squad-1" appeared.
 CHANNELS_ROUND_2 = [
-    {"name": "default", "has_connector": True, "clients_count": 0, "permanent": True},
+    {"name": "default", "has_connector": True, "clients_count": 1, "permanent": True},
     {"name": "squad-1", "has_connector": False, "clients_count": 1, "permanent": False},
 ]
 CLIENTS_ROUND_2 = {
+    "default": {
+        "name": "default",
+        "has_connector": True,
+        "clients_count": 1,
+        "permanent": True,
+        "clients": [],
+    },
     "squad-1": {
         "name": "squad-1",
         "has_connector": False,
@@ -148,16 +151,22 @@ class ProbeTest(unittest.TestCase):
             f'target="{self.target}"}} 1.0',
             body,
         )
+        # "default" lost its human but is still flagged has_connector=true (and its detail's
+        # "clients" array is still empty, exactly like the real server): the connector row
+        # must come from that flag, not from the (always empty, for it) clients array.
+        self.assertIn(
+            f'inari_connected_user{{channel="default",display_name="Connector",is_connector="true",'
+            f'target="{self.target}"}} 1.0',
+            body,
+        )
         # The exporter cannot tell *when* within the interval Bob joined, so like everyone
         # present at this poll he is credited with the whole elapsed time since the last one
         # (an over-estimate for someone who just joined - the same approximation as above).
         self.assertIn('inari_user_connected_seconds_total{channel="squad-1",display_name="Bob"', body)
-        # The connector's raw display_name is never used, only the forced "Connector".
-        self.assertNotIn("connector-bot", body)
-        # Alice already left by the time of this poll (round 2's "default" has 0 clients): a
-        # user who disconnects between two polls gets no credit for that interval, and drops
-        # out of the "currently connected" snapshot immediately. Known approximation of
-        # polling-based duration tracking, documented in the README.
+        # Alice already left by the time of this poll: a user who disconnects between two polls
+        # gets no credit for that interval, and drops out of the "currently connected" snapshot
+        # immediately. Known approximation of polling-based duration tracking, documented in the
+        # README.
         self.assertNotIn("Alice", body)
 
         time.sleep(1.1)

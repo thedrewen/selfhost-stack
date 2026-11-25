@@ -98,24 +98,33 @@ def probe(target: str) -> bytes:
             connected_now = {}
             for channel in channels:
                 name = channel["name"]
+                has_connector = bool(channel.get("has_connector", False))
                 new_channels[name] = {
                     "permanent": bool(channel.get("permanent", False)),
-                    "has_connector": bool(channel.get("has_connector", False)),
+                    "has_connector": has_connector,
                     "clients_count": int(channel.get("clients_count", 0)),
                 }
+
+                # The connector's presence comes from the channel's own has_connector flag, not
+                # from the clients list: some Inari versions count it in clients_count and
+                # has_connector but never actually list it among "clients" (always an empty
+                # client entry for it, or none at all). Only one connector per channel is ever
+                # allowed, so this is always exactly one row.
+                if has_connector:
+                    now_key = (name, "Connector", True)
+                    connected_now[now_key] = connected_now.get(now_key, 0) + 1
 
                 detail = details.get(name)
                 if detail:
                     for client in detail.get("clients") or []:
-                        is_connector = bool(client.get("is_connector"))
-                        # The connector's own display_name is whatever the game plugin sent, not a
-                        # player: show it as "Connector" instead.
-                        display_name = "Connector" if is_connector else client.get("display_name", "")
+                        if client.get("is_connector"):
+                            continue  # already accounted for above, from has_connector
+                        display_name = client.get("display_name", "")
 
-                        now_key = (name, display_name, is_connector)
+                        now_key = (name, display_name, False)
                         connected_now[now_key] = connected_now.get(now_key, 0) + 1
 
-                        if elapsed > 0 and not is_connector:
+                        if elapsed > 0:
                             seconds_key = (name, display_name)
                             state["user_seconds"][seconds_key] = (
                                 state["user_seconds"].get(seconds_key, 0.0) + elapsed
