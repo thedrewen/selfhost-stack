@@ -9,6 +9,9 @@ services:
       - --config.file=/etc/blackbox_exporter/config.yml
     volumes:
       - ./config.yml:/etc/blackbox_exporter/config.yml:ro
+    # Lets the non-root user of the image send ICMP echo requests (ping) without extra capabilities
+    sysctls:
+      - net.ipv4.ping_group_range=0 2147483647
     networks:
       - shared
 

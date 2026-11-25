@@ -1,0 +1,8 @@
+# Hosts pinged by blackbox-exporter (round-trip time, packet loss, availability).
+# Prometheus reloads this file by itself (about every minute): no restart needed after editing it.
+# Add one IP or hostname per target, without "https://", for example:
+#
+# - targets:
+#     - 1.1.1.1
+#     - 203.0.113.10
+[]

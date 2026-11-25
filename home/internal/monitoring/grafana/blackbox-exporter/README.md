@@ -12,6 +12,8 @@ Probes your public sites from the server: availability, response time, HTTP stat
 ## Behavior
 
 - No port is published: it is only reachable from containers on the `shared` network (`blackbox-exporter:9115`).
-- The only module is `http_2xx` (`config.yml`): HTTPS required, redirects followed, 10 s timeout. Add other modules there (TCP, DNS, ICMP…) and reference them from `prometheus.yml`.
+- `http_2xx` (`config.yml`): HTTPS required, redirects followed, 10 s timeout. Used by the `blackbox` job (`../prometheus/targets/blackbox.yml`).
+- `icmp` (`config.yml`): ping, 5 s timeout. Used by the `blackbox-icmp` job (`../prometheus/targets/icmp.yml`, one IP or hostname per line, no `https://`). The compose file sets `net.ipv4.ping_group_range` so the non-root user of the image can send pings. Ping the real IP of a server: a domain proxied by Cloudflare would only ping Cloudflare.
+- Add other modules there (TCP, DNS…) and reference them from `prometheus.yml`.
 - The probes go through the server's public address, so they also test DNS and Traefik, as a visitor would.
-- Dashboard: "Blackbox Exporter (HTTP prober)" (grafana.com ID `13659`) is provisioned automatically in Grafana (`../provisioning/dashboards/blackbox.json`). Use the `job` and `instance` variables to pick a site.
+- Dashboard: "Blackbox Exporter (HTTP + ICMP)" (based on grafana.com ID `13659`) is provisioned automatically in Grafana (`../provisioning/dashboards/blackbox.json`). It has an HTTP section and an ICMP (ping) section; use the `job` and `instance` variables to pick a target.

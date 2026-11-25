@@ -1,22 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    }
-  ],
   "uid": "NEzutrbMk",
   "title": "Blackbox Exporter (HTTP + ICMP)",
   "description": "Blackbox exporter dashboard: HTTP probes (status, SSL, durations) and ICMP probes (ping RTT, packet loss, jitter).",
@@ -50,15 +32,15 @@
         "type": "query",
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "prometheus"
         },
         "definition": "label_values(probe_success, job)",
-        "query": {
-          "query": "label_values(probe_success, job)",
-          "refId": "job-var"
-        },
-        "refresh": 2,
-        "sort": 1,
+        "query": "label_values(probe_success, job)",
+        "refresh": 1,
+        "sort": 2,
+        "regex": "",
+        "options": [],
+        "error": null,
         "multi": true,
         "includeAll": true,
         "allValue": ".+",
@@ -80,15 +62,15 @@
         "type": "query",
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "prometheus"
         },
         "definition": "label_values(probe_success{job=~\"$job\"}, instance)",
-        "query": {
-          "query": "label_values(probe_success{job=~\"$job\"}, instance)",
-          "refId": "instance-var"
-        },
-        "refresh": 2,
-        "sort": 1,
+        "query": "label_values(probe_success{job=~\"$job\"}, instance)",
+        "refresh": 1,
+        "sort": 2,
+        "regex": "",
+        "options": [],
+        "error": null,
         "multi": true,
         "includeAll": true,
         "allValue": ".+",
@@ -110,15 +92,15 @@
         "type": "query",
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "prometheus"
         },
         "definition": "label_values(probe_http_status_code{job=~\"$job\", instance=~\"$instance\"}, instance)",
-        "query": {
-          "query": "label_values(probe_http_status_code{job=~\"$job\", instance=~\"$instance\"}, instance)",
-          "refId": "http_instance-var"
-        },
-        "refresh": 2,
-        "sort": 1,
+        "query": "label_values(probe_http_status_code{job=~\"$job\", instance=~\"$instance\"}, instance)",
+        "refresh": 1,
+        "sort": 2,
+        "regex": "",
+        "options": [],
+        "error": null,
         "multi": true,
         "includeAll": true,
         "allValue": ".+",
@@ -144,7 +126,7 @@
       "description": "HTTP + ICMP targets currently up",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 4,
@@ -189,7 +171,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "count(probe_success{job=~\"$job\", instance=~\"$instance\"} == 1) or vector(0)",
           "legendFormat": "",
@@ -204,7 +186,7 @@
       "description": "HTTP + ICMP targets currently failing",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 4,
@@ -253,7 +235,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "count(probe_success{job=~\"$job\", instance=~\"$instance\"} == 0) or vector(0)",
           "legendFormat": "",
@@ -268,7 +250,7 @@
       "description": "Share of successful probes over the selected time range",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 4,
@@ -322,7 +304,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "avg(avg_over_time(probe_success{job=~\"$job\", instance=~\"$instance\"}[$__range])) * 100",
           "legendFormat": "",
@@ -337,7 +319,7 @@
       "description": "Average total HTTP probe duration (successful probes)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 4,
@@ -391,7 +373,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "avg((probe_duration_seconds{job=~\"$job\", instance=~\"$instance\"} and on(job, instance) probe_http_status_code) and on(job, instance) (probe_success{job=~\"$job\", instance=~\"$instance\"} == 1))",
           "legendFormat": "",
@@ -406,7 +388,7 @@
       "description": "Average ping round-trip time (successful probes)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 4,
@@ -460,7 +442,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "avg(probe_icmp_duration_seconds{job=~\"$job\", instance=~\"$instance\", phase=\"rtt\"} and on(job, instance) (probe_success{job=~\"$job\", instance=~\"$instance\"} == 1))",
           "legendFormat": "",
@@ -475,7 +457,7 @@
       "description": "Days left before the soonest certificate expires",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 4,
@@ -533,7 +515,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "min(((probe_ssl_earliest_cert_expiry{job=~\"$job\", instance=~\"$instance\"} > 0) - time()) / 86400)",
           "legendFormat": "",
@@ -548,7 +530,7 @@
       "description": "Red = probe failed (HTTP non-2xx / timeout, or ping lost).",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 7,
@@ -616,7 +598,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "probe_success{job=~\"$job\", instance=~\"$instance\"}",
           "legendFormat": "{{ instance }}",
@@ -643,7 +625,7 @@
       "title": "HTTP Probe Overview",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 8,
@@ -1108,7 +1090,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "probe_success{job=~\"$job\", instance=~\"$instance\"} and on(job, instance) probe_http_status_code",
           "legendFormat": "",
@@ -1120,7 +1102,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "probe_http_ssl{job=~\"$job\", instance=~\"$instance\"} > 0",
           "legendFormat": "",
@@ -1132,7 +1114,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "((probe_ssl_earliest_cert_expiry{job=~\"$job\", instance=~\"$instance\"} > 0) - time()) / 86400",
           "legendFormat": "",
@@ -1144,7 +1126,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "probe_http_status_code{job=~\"$job\", instance=~\"$instance\"} > 0",
           "legendFormat": "",
@@ -1156,7 +1138,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "avg_over_time(probe_duration_seconds{job=~\"$job\", instance=~\"$instance\"}[1m])",
           "legendFormat": "",
@@ -1168,7 +1150,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "probe_tls_version_info{job=~\"$job\", instance=~\"$instance\"}",
           "legendFormat": "",
@@ -1180,7 +1162,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "avg_over_time(probe_dns_lookup_time_seconds{job=~\"$job\", instance=~\"$instance\"}[1m])",
           "legendFormat": "",
@@ -1192,7 +1174,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "avg_over_time(probe_success{job=~\"$job\", instance=~\"$instance\"}[$__range]) * 100 and on(job, instance) probe_http_status_code",
           "legendFormat": "",
@@ -1204,7 +1186,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "(1 - avg_over_time(probe_success{job=~\"$job\", instance=~\"$instance\"}[$__range])) * $__range_s and on(job, instance) probe_http_status_code",
           "legendFormat": "",
@@ -1271,7 +1253,7 @@
       "description": "Real status code returned to the prober (even when the probe fails, e.g. 502). 0 = no response at all.",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 6,
@@ -1346,7 +1328,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "probe_http_status_code{job=~\"$job\", instance=~\"$instance\"}",
           "legendFormat": "{{ instance }}",
@@ -1361,7 +1343,7 @@
       "description": "How long the HTTP probe took to complete (sum of all phases and redirects).",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 8,
@@ -1422,7 +1404,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "sum(probe_http_duration_seconds{job=~\"$job\", instance=~\"$instance\"}) by (instance)",
           "legendFormat": "{{ instance }}",
@@ -1449,7 +1431,7 @@
       "title": "ICMP Overview",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 8,
@@ -1657,7 +1639,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "probe_success{job=~\"$job\", instance=~\"$instance\"} and on(job, instance) probe_icmp_duration_seconds",
           "legendFormat": "",
@@ -1669,7 +1651,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "probe_icmp_duration_seconds{job=~\"$job\", instance=~\"$instance\", phase=\"rtt\"} and on(job, instance) (probe_success{job=~\"$job\", instance=~\"$instance\"} == 1)",
           "legendFormat": "",
@@ -1681,7 +1663,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "avg_over_time(probe_success{job=~\"$job\", instance=~\"$instance\"}[$__range]) * 100 and on(job, instance) probe_icmp_duration_seconds",
           "legendFormat": "",
@@ -1693,7 +1675,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "(1 - avg_over_time(probe_success{job=~\"$job\", instance=~\"$instance\"}[$__range])) * $__range_s and on(job, instance) probe_icmp_duration_seconds",
           "legendFormat": "",
@@ -1748,7 +1730,7 @@
       "description": "Round-trip time. Failed pings appear as gaps, not as 0.",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 8,
@@ -1809,7 +1791,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "probe_icmp_duration_seconds{job=~\"$job\", instance=~\"$instance\", phase=\"rtt\"} and on(job, instance) (probe_success{job=~\"$job\", instance=~\"$instance\"} == 1)",
           "legendFormat": "{{ instance }}",
@@ -1824,7 +1806,7 @@
       "description": "Percentage of failed pings over a sliding 5-minute window.",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 8,
@@ -1884,7 +1866,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "(1 - avg_over_time(probe_success{job=~\"$job\", instance=~\"$instance\"}[5m])) * 100 and on(job, instance) probe_icmp_duration_seconds",
           "legendFormat": "{{ instance }}",
@@ -1899,7 +1881,7 @@
       "description": "Standard deviation of RTT over 5 minutes: higher = less stable link.",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "prometheus"
       },
       "gridPos": {
         "h": 8,
@@ -1959,7 +1941,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "expr": "stddev_over_time((probe_icmp_duration_seconds{job=~\"$job\", instance=~\"$instance\", phase=\"rtt\"} and on(job, instance) (probe_success{job=~\"$job\", instance=~\"$instance\"} == 1))[5m:])",
           "legendFormat": "{{ instance }}",
@@ -1986,7 +1968,7 @@
           "description": "Duration of the HTTP request by phase, summed over all redirects",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "gridPos": {
             "h": 7,
@@ -2041,7 +2023,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "expr": "probe_http_duration_seconds{job=~\"$job\", instance=~\"$http_instance\"}",
               "legendFormat": "{{ phase }}",

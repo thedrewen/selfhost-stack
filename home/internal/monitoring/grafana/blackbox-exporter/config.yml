@@ -8,3 +8,10 @@ modules:
       follow_redirects: true
       preferred_ip_protocol: ip4
       fail_if_not_ssl: true
+
+  # Ping check: the host must answer an ICMP echo request. Targets are listed in ../prometheus/targets/icmp.yml
+  icmp:
+    prober: icmp
+    timeout: 5s
+    icmp:
+      preferred_ip_protocol: ip4
