@@ -11,7 +11,7 @@
   "graphTooltip": 1,
   "refresh": "30s",
   "schemaVersion": 39,
-  "version": 2,
+  "version": 3,
   "style": "dark",
   "time": {
     "from": "now-24h",
@@ -58,6 +58,19 @@
   },
   "panels": [
     {
+      "id": 100,
+      "type": "row",
+      "title": "Overview",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
       "id": 1,
       "type": "stat",
       "title": "Instances UP",
@@ -67,10 +80,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 4,
+        "h": 8,
         "w": 4,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -78,13 +91,18 @@
             "mode": "thresholds"
           },
           "unit": "none",
+          "decimals": 0,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "red",
                 "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
               }
             ]
           }
@@ -93,7 +111,7 @@
       },
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "textMode": "auto",
@@ -113,24 +131,26 @@
           },
           "expr": "count(inari_up{target=~\"$target\"} == 1) or vector(0)",
           "legendFormat": "",
-          "refId": "A"
+          "refId": "A",
+          "range": true,
+          "instant": false
         }
       ]
     },
     {
       "id": 2,
-      "type": "stat",
+      "type": "gauge",
       "title": "Channels open",
-      "description": "Channels currently open, across the selected instances",
+      "description": "Channels currently open, across the selected instances. Scale is 0-20 by default: widen it (panel edit > Standard options > Max) if your server regularly hosts more.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 4,
+        "h": 8,
         "w": 4,
         "x": 4,
-        "y": 0
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -138,12 +158,15 @@
             "mode": "thresholds"
           },
           "unit": "none",
+          "decimals": 0,
+          "min": 0,
+          "max": 20,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "blue",
                 "value": null
               }
             ]
@@ -152,11 +175,9 @@
         "overrides": []
       },
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false,
         "orientation": "auto",
-        "textMode": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -179,18 +200,18 @@
     },
     {
       "id": 3,
-      "type": "stat",
+      "type": "gauge",
       "title": "Users connected now",
-      "description": "Users currently connected, across all channels of the selected instances",
+      "description": "Users currently connected, across all channels of the selected instances. Scale is 0-50 by default: widen it (panel edit > Standard options > Max) for a busier server.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 4,
+        "h": 8,
         "w": 4,
         "x": 8,
-        "y": 0
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -198,12 +219,15 @@
             "mode": "thresholds"
           },
           "unit": "none",
+          "decimals": 0,
+          "min": 0,
+          "max": 50,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "blue",
                 "value": null
               }
             ]
@@ -212,11 +236,9 @@
         "overrides": []
       },
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false,
         "orientation": "auto",
-        "textMode": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -241,16 +263,16 @@
       "id": 4,
       "type": "stat",
       "title": "Channels created (period)",
-      "description": "Channels that appeared during the selected time range",
+      "description": "Channels that appeared during the selected time range (bars show the trend within it)",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 4,
+        "h": 8,
         "w": 4,
         "x": 12,
-        "y": 0
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -274,13 +296,13 @@
       },
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "textMode": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "sum"
           ],
           "fields": "",
           "values": false
@@ -292,9 +314,11 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(increase(inari_channels_created_total{target=~\"$target\"}[$__range])) or vector(0)",
+          "expr": "sum(increase(inari_channels_created_total{target=~\"$target\"}[$__interval])) or vector(0)",
           "legendFormat": "",
-          "refId": "A"
+          "refId": "A",
+          "range": true,
+          "instant": false
         }
       ]
     },
@@ -302,16 +326,16 @@
       "id": 5,
       "type": "stat",
       "title": "Channels deleted (period)",
-      "description": "Channels that disappeared during the selected time range",
+      "description": "Channels that disappeared during the selected time range (bars show the trend within it)",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 4,
+        "h": 8,
         "w": 4,
         "x": 16,
-        "y": 0
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -325,7 +349,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "orange",
                 "value": null
               }
             ]
@@ -335,13 +359,13 @@
       },
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "textMode": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "sum"
           ],
           "fields": "",
           "values": false
@@ -353,15 +377,17 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(increase(inari_channels_deleted_total{target=~\"$target\"}[$__range])) or vector(0)",
+          "expr": "sum(increase(inari_channels_deleted_total{target=~\"$target\"}[$__interval])) or vector(0)",
           "legendFormat": "",
-          "refId": "A"
+          "refId": "A",
+          "range": true,
+          "instant": false
         }
       ]
     },
     {
       "id": 6,
-      "type": "stat",
+      "type": "gauge",
       "title": "Avg probe duration",
       "description": "Time inari-exporter takes to poll the instance(s)",
       "datasource": {
@@ -369,10 +395,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 4,
+        "h": 8,
         "w": 4,
         "x": 20,
-        "y": 0
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -381,6 +407,8 @@
           },
           "unit": "s",
           "decimals": 2,
+          "min": 0,
+          "max": 5,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -403,11 +431,9 @@
         "overrides": []
       },
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
         "orientation": "auto",
-        "textMode": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -429,154 +455,17 @@
       ]
     },
     {
-      "id": 10,
-      "type": "timeseries",
-      "title": "Users connected over time",
-      "description": "Users currently connected per instance",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "id": 101,
+      "type": "row",
+      "title": "Live now",
+      "collapsed": false,
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 1,
+        "w": 24,
         "x": 0,
-        "y": 4
+        "y": 9
       },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "unit": "none",
-          "mappings": [],
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "showPoints": "never",
-            "spanNulls": false,
-            "lineInterpolation": "linear",
-            "stacking": {
-              "mode": "none",
-              "group": "A"
-            }
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "min": 0
-        },
-        "overrides": []
-      },
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "calcs": [
-            "mean",
-            "max",
-            "lastNotNull"
-          ]
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "inari_channel_clients_total{target=~\"$target\"}",
-          "legendFormat": "{{ target }}",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "id": 11,
-      "type": "timeseries",
-      "title": "Channels open over time",
-      "description": "Channels currently open per instance",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 4
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "unit": "none",
-          "mappings": [],
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "showPoints": "never",
-            "spanNulls": false,
-            "lineInterpolation": "linear",
-            "stacking": {
-              "mode": "none",
-              "group": "A"
-            }
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "min": 0
-        },
-        "overrides": []
-      },
-      "options": {
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "calcs": [
-            "mean",
-            "max",
-            "lastNotNull"
-          ]
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "inari_channels_total{target=~\"$target\"}",
-          "legendFormat": "{{ target }}",
-          "refId": "A"
-        }
-      ]
+      "panels": []
     },
     {
       "id": 12,
@@ -591,7 +480,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 10
       },
       "fieldConfig": {
         "defaults": {
@@ -674,6 +563,10 @@
               {
                 "id": "custom.width",
                 "value": 90
+              },
+              {
+                "id": "displayName",
+                "value": "Clients"
               }
             ]
           }
@@ -683,7 +576,7 @@
         "showHeader": true,
         "sortBy": [
           {
-            "displayName": "Value",
+            "displayName": "Clients",
             "desc": true
           }
         ]
@@ -735,7 +628,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 18
       },
       "fieldConfig": {
         "defaults": {
@@ -847,27 +740,52 @@
       ]
     },
     {
-      "id": 13,
-      "type": "table",
-      "title": "Most connected users (all-time since exporter start)",
-      "description": "Display names ranked by cumulative time connected. Resets if inari-exporter restarts; see the README for why.",
+      "id": 102,
+      "type": "row",
+      "title": "History",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
+      "panels": []
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Users connected over time",
+      "description": "Users currently connected per instance",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
-        "h": 10,
-        "w": 24,
+        "h": 8,
+        "w": 12,
         "x": 0,
-        "y": 28
+        "y": 27
       },
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": "left",
-            "filterable": true
+          "color": {
+            "mode": "palette-classic"
           },
+          "unit": "none",
           "mappings": [],
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            }
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -876,41 +794,26 @@
                 "value": null
               }
             ]
-          }
+          },
+          "min": 0
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "s"
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "color-background"
-                }
-              },
-              {
-                "id": "custom.width",
-                "value": 160
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "options": {
-        "showHeader": true,
-        "sortBy": [
-          {
-            "displayName": "Value",
-            "desc": true
-          }
-        ]
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        }
       },
       "targets": [
         {
@@ -918,30 +821,242 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "topk(20, inari_user_connected_seconds_total{target=~\"$target\"})",
-          "legendFormat": "",
+          "expr": "inari_channel_clients_total{target=~\"$target\"}",
+          "legendFormat": "{{ target }}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Channels open over time",
+      "description": "Channels currently open per instance",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 27
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "none",
+          "mappings": [],
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "inari_channels_total{target=~\"$target\"}",
+          "legendFormat": "{{ target }}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "type": "timeseries",
+      "title": "Probe duration over time",
+      "description": "How long inari-exporter takes to poll each instance",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 35
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "s",
+          "mappings": [],
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 3
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "inari_probe_duration_seconds{target=~\"$target\"}",
+          "legendFormat": "{{ target }}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "type": "row",
+      "title": "Leaderboard",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 41
+      },
+      "panels": []
+    },
+    {
+      "id": 13,
+      "type": "bargauge",
+      "title": "Most connected users (all-time since exporter start)",
+      "description": "Display names ranked by cumulative time connected. Resets if inari-exporter restarts; see the README for why.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 42
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-blues"
+          },
+          "unit": "s",
+          "decimals": 0,
+          "min": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "topk(15, inari_user_connected_seconds_total{target=~\"$target\"})",
+          "legendFormat": "{{ display_name }} ({{ channel }})",
           "refId": "A",
-          "format": "table",
           "instant": true,
           "range": false
-        }
-      ],
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true
-            },
-            "indexByName": {
-              "target": 0,
-              "channel": 1,
-              "display_name": 2,
-              "Value": 3
-            },
-            "renameByName": {}
-          }
         }
       ]
     }
